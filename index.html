@@ -135,8 +135,11 @@
                                 <div class="loader-text" id="loader-text">
                                     Đang nhận diện phương tiện giao thông...
                                 </div>
-                                <div class="loader-subtext">
+                                <div class="loader-subtext" id="loader-subtext">
                                     Vui lòng chờ trong giây lát
+                                </div>
+                                <div class="progress-container" id="progress-container" style="display: none;">
+                                    <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
                                 </div>
                             </div>
 
@@ -420,6 +423,33 @@
                         <div class="form-desc">
                             Chỉ hiển thị các phương tiện được phát hiện có độ tự
                             tin lớn hơn hoặc bằng ngưỡng này.
+                        </div>
+                    </div>
+
+                    <!-- Video duration slider -->
+                    <div class="form-group" style="margin-top: 24px;">
+                        <label class="form-label" for="video-duration"
+                            >Giới hạn thời lượng xử lý Video (Giây)</label
+                        >
+                        <div class="slider-container">
+                            <input
+                                type="range"
+                                class="form-slider"
+                                id="video-duration"
+                                min="5"
+                                max="180"
+                                step="5"
+                                value="15"
+                                oninput="
+                                    document.getElementById(
+                                        'duration-val',
+                                    ).innerText = this.value + 's'
+                                "
+                            />
+                            <span class="slider-value" id="duration-val">15s</span>
+                        </div>
+                        <div class="form-desc">
+                            Giới hạn độ dài tối đa của video được xử lý từ đầu để tránh quá tải máy chủ và tối ưu hóa thời gian xử lý.
                         </div>
                     </div>
 
