@@ -8,7 +8,10 @@ const BACKEND_URL =
         ? "http://127.0.0.1:8000"
         : "https://anhhuy0402-traffic-ai-be.hf.space";
 
-console.log("Traffic AI Backend URL connected at:", BACKEND_URL || "Local Server");
+console.log(
+    "Traffic AI Backend URL connected at:",
+    BACKEND_URL || "Local Server",
+);
 
 // ========================================================
 // 1. CHUYỂN TABS CHỨC NĂNG
