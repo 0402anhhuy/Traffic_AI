@@ -327,21 +327,24 @@ main {
 .display-area {
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    background: #000000;
-    min-height: 380px;
-    max-height: 550px;
+    background: #0f172a; /* Slate tối cao cấp, sang trọng */
+    min-height: 350px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     position: relative;
+    width: 100%;
+    transition: var(--transition-smooth);
 }
 
 .display-area img,
 .display-area video {
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: auto;
+    max-height: 750px; /* Cho phép hiển thị ảnh lớn hơn, tối ưu không gian */
     object-fit: contain;
+    display: block;
 }
 
 .empty-display {
