@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Traffic AI - Hệ thống giám sát giao thông thông minh</title>
+
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- FontAwesome Icons -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <!-- Header & Navigation -->
+        <header>
+            <div class="nav-container">
+                <a href="#" class="nav-logo">
+                    <i class="fa-solid fa-road-barrier"></i> Traffic AI Hub
+                </a>
+                <div class="nav-tabs">
+                    <button
+                        class="tab-btn active"
+                        onclick="switchTab('detect-tab')"
+                    >
+                        <i class="fa-solid fa-camera"></i> Nhận diện
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('eda-tab')">
+                        <i class="fa-solid fa-chart-simple"></i> Phân bố dữ liệu
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('map-tab')">
+                        <i class="fa-solid fa-chart-line"></i> Độ chính xác (AP)
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('settings-tab')">
+                        <i class="fa-solid fa-sliders"></i> Cấu hình
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Tab 1: Real-time Detection -->
+            <div id="detect-tab" class="tab-content active">
+                <div class="detect-grid">
+                    <!-- Left panel: Control & Display -->
+                    <div>
+                        <!-- Dropzone & URL controls -->
+                        <div class="glass-card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fa-solid fa-upload"></i> Nguồn dữ
+                                    liệu đầu vào
+                                </h2>
+                            </div>
+
+                            <div class="dropzone-container">
+                                <input
+                                    type="file"
+                                    id="file-input"
+                                    accept="image/*,video/*"
+                                    style="display: none"
+                                    onchange="handleFileSelect(event)"
+                                />
+                                <div
+                                    class="dropzone"
+                                    id="dropzone"
+                                    onclick="
+                                        document
+                                            .getElementById('file-input')
+                                            .click()
+                                    "
+                                >
+                                    <i
+                                        class="fa-solid fa-cloud-arrow-up dropzone-icon"
+                                    ></i>
+                                    <div class="dropzone-text">
+                                        Kéo thả file ảnh hoặc video vào đây
+                                    </div>
+                                    <div class="dropzone-subtext">
+                                        Hỗ trợ JPG, PNG, MP4, AVI
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="url-divider">HOẶC</div>
+
+                            <div class="url-input-group">
+                                <input
+                                    type="text"
+                                    class="url-input"
+                                    id="url-input"
+                                    placeholder="Dán link ảnh, link video direct, hoặc link YouTube vào đây..."
+                                />
+                                <button
+                                    class="btn-action"
+                                    id="btn-detect-url"
+                                    onclick="detectUrl()"
+                                >
+                                    <i class="fa-solid fa-circle-play"></i> Xử
+                                    lý Link
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Output display -->
+                        <div class="glass-card" style="position: relative">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fa-solid fa-tv"></i> Kết quả nhận
+                                    diện phương tiện
+                                </h2>
+                                <button
+                                    class="tab-btn"
+                                    id="btn-clear"
+                                    onclick="clearDisplay()"
+                                    style="padding: 6px 12px; font-size: 12px"
+                                >
+                                    <i class="fa-solid fa-trash-can"></i> Xóa
+                                </button>
+                            </div>
+
+                            <!-- Overlay loading screen -->
+                            <div class="loader-overlay" id="detect-loader">
+                                <div class="spinner"></div>
+                                <div class="loader-text" id="loader-text">
+                                    Đang nhận diện phương tiện giao thông...
+                                </div>
+                                <div class="loader-subtext">
+                                    Vui lòng chờ trong giây lát
+                                </div>
+                            </div>
+
+                            <div class="display-area" id="display-area">
+                                <div class="empty-display">
+                                    <i class="fa-solid fa-images"></i>
+                                    <div>
+                                        Chưa có dữ liệu. Vui lòng tải file hoặc
+                                        dán link URL ở phía trên để bắt đầu.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right panel: Analytics counts -->
+                    <div>
+                        <div class="glass-card" style="height: 100%">
+                            <div class="sidebar-header">
+                                <i class="fa-solid fa-calculator"></i> BẢNG
+                                THỐNG KÊ CHI TIẾT
+                            </div>
+
+                            <div id="statistics-list">
+                                <div class="stat-item">
+                                    <span class="stat-label">
+                                        <span
+                                            class="stat-badge"
+                                            style="
+                                                background-color: var(
+                                                    --color-primary
+                                                );
+                                            "
+                                        ></span>
+                                        Ô tô (Car)
+                                    </span>
+                                    <span class="stat-value" id="count-car"
+                                        >0</span
+                                    >
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">
+                                        <span
+                                            class="stat-badge"
+                                            style="
+                                                background-color: var(
+                                                    --color-warning
+                                                );
+                                            "
+                                        ></span>
+                                        Xe ba bánh (Threewheel)
+                                    </span>
+                                    <span
+                                        class="stat-value"
+                                        id="count-threewheel"
+                                        >0</span
+                                    >
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">
+                                        <span
+                                            class="stat-badge"
+                                            style="
+                                                background-color: var(
+                                                    --color-success
+                                                );
+                                            "
+                                        ></span>
+                                        Xe buýt (Bus)
+                                    </span>
+                                    <span class="stat-value" id="count-bus"
+                                        >0</span
+                                    >
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">
+                                        <span
+                                            class="stat-badge"
+                                            style="
+                                                background-color: var(
+                                                    --color-danger
+                                                );
+                                            "
+                                        ></span>
+                                        Xe tải (Truck)
+                                    </span>
+                                    <span class="stat-value" id="count-truck"
+                                        >0</span
+                                    >
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">
+                                        <span
+                                            class="stat-badge"
+                                            style="background-color: #7c3aed"
+                                        ></span>
+                                        Xe máy (Motorbike)
+                                    </span>
+                                    <span
+                                        class="stat-value"
+                                        id="count-motorbike"
+                                        >0</span
+                                    >
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">
+                                        <span
+                                            class="stat-badge"
+                                            style="background-color: #0891b2"
+                                        ></span>
+                                        Xe van (Van)
+                                    </span>
+                                    <span class="stat-value" id="count-van"
+                                        >0</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                class="stat-item"
+                                style="
+                                    margin-top: 24px;
+                                    border: 1px solid var(--border-color);
+                                    background: #ffffff;
+                                "
+                            >
+                                <span
+                                    class="stat-label"
+                                    style="
+                                        font-weight: 700;
+                                        color: var(--color-primary);
+                                    "
+                                >
+                                    <i
+                                        class="fa-solid fa-square-poll-vertical"
+                                    ></i>
+                                    TỔNG CỘNG
+                                </span>
+                                <span
+                                    class="stat-value"
+                                    id="count-total"
+                                    style="
+                                        font-size: 20px;
+                                        color: var(--color-primary);
+                                    "
+                                    >0</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: EDA Stats -->
+            <div id="eda-tab" class="tab-content">
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fa-solid fa-chart-pie"></i> Phân bố dữ
+                            liệu Dataset (Huấn luyện & Đánh giá)
+                        </h2>
+                    </div>
+
+                    <div class="gallery-container">
+                        <button
+                            class="btn-action gallery-btn"
+                            id="btn-load-eda"
+                            onclick="loadEda()"
+                        >
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Hiển
+                            thị biểu đồ phân bố
+                        </button>
+
+                        <div
+                            class="loader-overlay"
+                            id="eda-loader"
+                            style="
+                                position: static;
+                                min-height: 200px;
+                                display: none;
+                             "
+                        >
+                            <div class="spinner"></div>
+                            <div class="loader-text">
+                                Đang tải biểu đồ phân bố...
+                            </div>
+                        </div>
+
+                        <div
+                            class="gallery-image-wrapper"
+                            id="eda-image-wrapper"
+                            style="display: none"
+                        >
+                            <!-- EDA image will load here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Evaluation Dashboard -->
+            <div id="map-tab" class="tab-content">
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fa-solid fa-chart-line"></i> Độ chính xác
+                            trung bình (Average Precision) của mô hình
+                        </h2>
+                    </div>
+
+                    <div class="gallery-container">
+                        <button
+                            class="btn-action gallery-btn"
+                            id="btn-load-eval"
+                            onclick="loadEvaluation()"
+                        >
+                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+                            Hiển thị độ chính xác mô hình
+                        </button>
+
+                        <div
+                            class="loader-overlay"
+                            id="eval-loader"
+                            style="
+                                position: static;
+                                min-height: 200px;
+                                display: none;
+                             "
+                        >
+                            <div class="spinner"></div>
+                            <div class="loader-text">
+                                Đang tải biểu đồ độ chính xác...
+                            </div>
+                            <div class="loader-subtext">
+                                Đang phân tích hiệu năng mô hình
+                            </div>
+                        </div>
+
+                        <div
+                            class="gallery-image-wrapper"
+                            id="eval-image-wrapper"
+                            style="display: none"
+                        >
+                            <!-- Evaluation plots will load here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Settings -->
+            <div id="settings-tab" class="tab-content">
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fa-solid fa-gears"></i> Cấu hình tham số
+                            Hệ thống
+                        </h2>
+                    </div>
+
+                    <!-- Model threshold sliders -->
+                    <div class="form-group">
+                        <label class="form-label" for="conf-threshold"
+                            >Confidence Threshold (Ngưỡng tự tin)</label
+                        >
+                        <div class="slider-container">
+                            <input
+                                type="range"
+                                class="form-slider"
+                                id="conf-threshold"
+                                min="0.05"
+                                max="0.95"
+                                step="0.05"
+                                value="0.5"
+                                oninput="
+                                    document.getElementById(
+                                        'conf-val',
+                                    ).innerText = this.value
+                                "
+                            />
+                            <span class="slider-value" id="conf-val">0.5</span>
+                        </div>
+                        <div class="form-desc">
+                            Chỉ hiển thị các phương tiện được phát hiện có độ tự
+                            tin lớn hơn hoặc bằng ngưỡng này.
+                        </div>
+                    </div>
+
+                    <!-- Hugging Face Integration -->
+                    <div
+                        class="form-group"
+                        style="
+                            margin-top: 32px;
+                            border-top: 1px solid var(--border-color);
+                            padding-top: 24px;
+                        "
+                    >
+                        <label class="form-label" for="hf-repo-input"
+                            >Hugging Face Repository ID</label
+                        >
+                        <div style="display: flex; gap: 10px">
+                            <input
+                                type="text"
+                                class="form-input"
+                                id="hf-repo-input"
+                                value="anhhuy0402/video_ai_traffic"
+                            />
+                            <button
+                                class="btn-action"
+                                id="btn-save-hf"
+                                onclick="saveHfConfig()"
+                            >
+                                <i class="fa-solid fa-cloud-arrow-down"></i> Tải
+                                Model
+                            </button>
+                        </div>
+                        <div class="form-desc">
+                            Nhập Repository ID trên Hugging Face Hub có chứa
+                            file <code>best_detector.pth</code>. Hệ thống sẽ tự
+                            động tải trọng số về container khi bạn click "Tải
+                            Model".
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Toast notification -->
+        <div class="toast" id="toast-notification">
+            <i class="fa-solid fa-circle-check" id="toast-icon"></i>
+            <span id="toast-message">Đã lưu cấu hình thành công!</span>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>
+                &copy; 2026 Traffic AI Project. Giao diện Web được tối ưu trực
+                quan hóa tối giản và cao cấp.
+            </p>
+        </footer>
+    </body>
+    <script src="app.js"></script>
+</html>
