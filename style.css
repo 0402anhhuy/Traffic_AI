@@ -5,14 +5,10 @@
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --color-primary: #2563eb;
-    /* Cobalt Blue */
     --color-primary-hover: #1d4ed8;
     --color-success: #059669;
-    /* Emerald Green */
     --color-danger: #dc2626;
-    /* Rose Red */
     --color-warning: #d97706;
-    /* Amber Gold */
     --border-color: rgba(226, 232, 240, 0.8);
     --shadow-premium: 0 20px 40px -15px rgba(15, 23, 42, 0.05);
     --shadow-hover: 0 30px 60px -20px rgba(15, 23, 42, 0.08);
@@ -46,8 +42,8 @@ h3,
 }
 
 /* ========================================================
-           HEADER & NAVIGATION BAR
-           ======================================================== */
+    HEADER & NAVIGATION BAR
+======================================================== */
 header {
     background: var(--bg-card);
     backdrop-filter: blur(12px);
@@ -118,8 +114,8 @@ header {
 }
 
 /* ========================================================
-           MAIN CONTENT CONTAINER
-           ======================================================== */
+    MAIN CONTENT CONTAINER
+======================================================== */
 main {
     flex: 1;
     max-width: 1200px;
@@ -150,8 +146,8 @@ main {
 }
 
 /* ========================================================
-           CARDS SYSTEM
-           ======================================================== */
+    CARDS SYSTEM
+======================================================== */
 .glass-card {
     background: var(--bg-card);
     backdrop-filter: blur(16px);
@@ -188,8 +184,8 @@ main {
 }
 
 /* ========================================================
-           TAB 1: REAL-TIME DETECTION LAYOUT
-           ======================================================== */
+    TAB 1: REAL-TIME DETECTION LAYOUT
+======================================================== */
 .detect-grid {
     display: grid;
     grid-template-columns: 1fr 340px;
@@ -409,8 +405,8 @@ main {
 }
 
 /* ========================================================
-           TABS 2 & 3: EDA & EVALUATION GALLERIES
-           ======================================================== */
+    TABS 2 & 3: EDA & EVALUATION GALLERIES
+======================================================== */
 .gallery-container {
     display: flex;
     flex-direction: column;
@@ -441,8 +437,8 @@ main {
 }
 
 /* ========================================================
-           TAB 4: CONFIGURATION / SETTINGS
-           ======================================================== */
+    TAB 4: CONFIGURATION / SETTINGS
+======================================================== */
 .form-group {
     margin-bottom: 20px;
 }
@@ -495,8 +491,8 @@ main {
 }
 
 /* ========================================================
-           LOADER SPINNERS / OVERLAY
-           ======================================================== */
+    LOADER SPINNERS / OVERLAY
+======================================================== */
 .loader-overlay {
     position: absolute;
     top: 0;
@@ -595,7 +591,7 @@ main {
 }
 
 /* ========================================================
-FOOTER
+    FOOTER
 ======================================================= */
 footer {
     text-align: center;
