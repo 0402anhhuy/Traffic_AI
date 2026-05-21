@@ -340,7 +340,7 @@ main {
 
 .display-area img,
 .display-area video {
-    width: 100%;
+    max-width: 100%;
     height: auto;
     max-height: 750px; /* Cho phép hiển thị ảnh lớn hơn, tối ưu không gian */
     object-fit: contain;
