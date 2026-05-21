@@ -111,8 +111,16 @@ function handleFileSelect(e) {
 function handleFile(file) {
     const loader = document.getElementById("detect-loader");
     const loaderText = document.getElementById("loader-text");
-    const display = document.getElementById("display-area");
+    const loaderSubtext = document.getElementById("loader-subtext");
+    const progressContainer = document.getElementById("progress-container");
+    const progressBar = document.getElementById("progress-bar");
     const conf = document.getElementById("conf-threshold").value;
+    const duration = document.getElementById("video-duration") ? document.getElementById("video-duration").value : 15;
+
+    // Reset progress UI
+    progressContainer.style.display = "none";
+    progressBar.style.width = "0%";
+    loaderSubtext.innerText = "Vui lòng chờ trong giây lát";
 
     loaderText.innerText = file.type.startsWith("video/")
         ? "Đang phân tích Video (Trích xuất các khung hình)..."
@@ -123,6 +131,7 @@ function handleFile(file) {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("confidence_threshold", conf);
+    formData.append("video_duration", duration);
 
     fetch(`${BACKEND_URL}/detect/file`, {
         method: "POST",
@@ -135,11 +144,16 @@ function handleFile(file) {
             return res.json();
         })
         .then((data) => {
-            loader.classList.remove("active");
             if (data.success) {
-                displayResult(data);
-                showToast("Xử lý file thành công!");
+                if (data.type === "video_task") {
+                    pollVideoTask(data.task_id);
+                } else {
+                    loader.classList.remove("active");
+                    displayResult(data);
+                    showToast("Xử lý file thành công!");
+                }
             } else {
+                loader.classList.remove("active");
                 showToast(data.message || "Xử lý file thất bại", "error");
             }
         })
@@ -164,7 +178,16 @@ function detectUrl() {
 
     const loader = document.getElementById("detect-loader");
     const loaderText = document.getElementById("loader-text");
+    const loaderSubtext = document.getElementById("loader-subtext");
+    const progressContainer = document.getElementById("progress-container");
+    const progressBar = document.getElementById("progress-bar");
     const conf = document.getElementById("conf-threshold").value;
+    const duration = document.getElementById("video-duration") ? document.getElementById("video-duration").value : 15;
+
+    // Reset progress UI
+    progressContainer.style.display = "none";
+    progressBar.style.width = "0%";
+    loaderSubtext.innerText = "Vui lòng chờ trong giây lát";
 
     loaderText.innerText =
         urlInput.includes("youtube.com") || urlInput.includes("youtu.be")
@@ -181,6 +204,7 @@ function detectUrl() {
         body: JSON.stringify({
             url: urlInput,
             confidence_threshold: conf,
+            video_duration: duration,
         }),
     })
         .then((res) => {
@@ -192,11 +216,16 @@ function detectUrl() {
             return res.json();
         })
         .then((data) => {
-            loader.classList.remove("active");
             if (data.success) {
-                displayResult(data);
-                showToast("Nhận diện từ Link thành công!");
+                if (data.type === "video_task") {
+                    pollVideoTask(data.task_id);
+                } else {
+                    loader.classList.remove("active");
+                    displayResult(data);
+                    showToast("Nhận diện từ Link thành công!");
+                }
             } else {
+                loader.classList.remove("active");
                 showToast("Xử lý thất bại!", "error");
             }
         })
@@ -204,6 +233,63 @@ function detectUrl() {
             loader.classList.remove("active");
             showToast(err.message, "error");
         });
+}
+
+// ========================================================
+// 5.5. POLLING TIẾN TRÌNH XỬ LÝ VIDEO
+// ========================================================
+function pollVideoTask(taskId) {
+    const loader = document.getElementById("detect-loader");
+    const loaderText = document.getElementById("loader-text");
+    const loaderSubtext = document.getElementById("loader-subtext");
+    const progressContainer = document.getElementById("progress-container");
+    const progressBar = document.getElementById("progress-bar");
+
+    loaderText.innerText = "Đang xử lý Video nền bất đồng bộ...";
+    loaderSubtext.innerText = "Chuẩn bị khởi tạo tiến trình...";
+    progressContainer.style.display = "block";
+    progressBar.style.width = "0%";
+    loader.classList.add("active");
+
+    const pollInterval = setInterval(() => {
+        fetch(`${BACKEND_URL}/task/${taskId}`)
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("Lỗi khi kiểm tra trạng thái tác vụ!");
+                }
+                return res.json();
+            })
+            .then((task) => {
+                if (task.status === "processing") {
+                    loaderSubtext.innerText = `Đang nhận diện: Đã hoàn thành ${task.progress}%`;
+                    progressBar.style.width = `${task.progress}%`;
+                } else if (task.status === "completed") {
+                    clearInterval(pollInterval);
+                    loader.classList.remove("active");
+                    progressContainer.style.display = "none";
+                    progressBar.style.width = "0%";
+                    
+                    // Hiển thị kết quả video
+                    displayResult({
+                        type: "video",
+                        video_url: task.result,
+                        counts: task.counts
+                    });
+                    showToast("Xử lý Video thành công!");
+                } else if (task.status === "failed") {
+                    clearInterval(pollInterval);
+                    loader.classList.remove("active");
+                    progressContainer.style.display = "none";
+                    showToast(`Lỗi xử lý video: ${task.error || 'Lỗi không xác định'}`, "error");
+                }
+            })
+            .catch((err) => {
+                clearInterval(pollInterval);
+                loader.classList.remove("active");
+                progressContainer.style.display = "none";
+                showToast(err.message, "error");
+            });
+    }, 1500);
 }
 
 // ========================================================
