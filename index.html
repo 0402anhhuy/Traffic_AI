@@ -138,8 +138,16 @@
                                 <div class="loader-subtext" id="loader-subtext">
                                     Vui lòng chờ trong giây lát
                                 </div>
-                                <div class="progress-container" id="progress-container" style="display: none;">
-                                    <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+                                <div
+                                    class="progress-container"
+                                    id="progress-container"
+                                    style="display: none"
+                                >
+                                    <div
+                                        class="progress-bar"
+                                        id="progress-bar"
+                                        style="width: 0%"
+                                    ></div>
                                 </div>
                             </div>
 
@@ -427,7 +435,7 @@
                     </div>
 
                     <!-- Video duration slider -->
-                    <div class="form-group" style="margin-top: 24px;">
+                    <div class="form-group" style="margin-top: 24px">
                         <label class="form-label" for="video-duration"
                             >Giới hạn thời lượng xử lý Video (Giây)</label
                         >
@@ -446,10 +454,14 @@
                                     ).innerText = this.value + 's'
                                 "
                             />
-                            <span class="slider-value" id="duration-val">15s</span>
+                            <span class="slider-value" id="duration-val"
+                                >15s</span
+                            >
                         </div>
                         <div class="form-desc">
-                            Giới hạn độ dài tối đa của video được xử lý từ đầu để tránh quá tải máy chủ và tối ưu hóa thời gian xử lý.
+                            Giới hạn độ dài tối đa của video được xử lý từ đầu
+                            để tránh quá tải máy chủ và tối ưu hóa thời gian xử
+                            lý.
                         </div>
                     </div>
 
@@ -484,9 +496,7 @@
                         </div>
                         <div class="form-desc">
                             Nhập Repository ID trên Hugging Face Hub có chứa
-                            file <code>best_detector.pth</code>. Hệ thống sẽ tự
-                            động tải trọng số về container khi bạn click "Tải
-                            Model".
+                            file <code>best_detector.pth</code>
                         </div>
                     </div>
                 </div>
@@ -496,15 +506,12 @@
         <!-- Toast notification -->
         <div class="toast" id="toast-notification">
             <i class="fa-solid fa-circle-check" id="toast-icon"></i>
-            <span id="toast-message">Đã lưu cấu hình thành công!</span>
+            <span id="toast-message">Đã lưu cấu hình thành công</span>
         </div>
 
         <!-- Footer -->
         <footer>
-            <p>
-                &copy; 2026 Traffic AI Project. Giao diện Web được tối ưu trực
-                quan hóa tối giản và cao cấp.
-            </p>
+            <p>&copy; 2026 Traffic AI Project</p>
         </footer>
     </body>
     <script src="app.js"></script>
