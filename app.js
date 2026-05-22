@@ -184,7 +184,7 @@ function detectUrl() {
     const urlInput = document.getElementById("url-input").value.trim();
     if (!urlInput) {
         showToast(
-            "Vui lòng nhập Link URL ảnh, video hoặc link YouTube!",
+            "Vui lòng nhập Link video direct hoặc link YouTube!",
             "error",
         );
         return;
