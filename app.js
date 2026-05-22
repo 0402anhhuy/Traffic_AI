@@ -100,6 +100,23 @@ function handleFileSelect(e) {
     }
 }
 
+// Lắng nghe sự kiện Paste (Ctrl + V) ảnh trực tiếp
+document.addEventListener("paste", (e) => {
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+            const file = items[i].getAsFile();
+            // Đảm bảo người dùng đang ở Tab Nhận diện thì mới xử lý
+            const detectTab = document.getElementById("detect-tab");
+            if (detectTab && detectTab.classList.contains("active")) {
+                handleFile(file);
+                e.preventDefault();
+                break;
+            }
+        }
+    }
+});
+
 // ========================================================
 // 4. API CALLS: UPLOAD & NHẬN DIỆN FILE
 // ========================================================
