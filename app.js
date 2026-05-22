@@ -17,23 +17,18 @@ console.log(
 // 1. CHUYỂN TABS CHỨC NĂNG
 // ========================================================
 function switchTab(tabId) {
-    // Khử active tất cả các tab button
     document.querySelectorAll(".tab-btn").forEach((btn) => {
-        // Không xóa nút "Xóa"
         if (btn.id !== "btn-clear") {
             btn.classList.remove("active");
         }
     });
 
-    // Tìm nút click và kích hoạt
     event.currentTarget.classList.add("active");
 
-    // Ẩn tất cả các nội dung tab
     document.querySelectorAll(".tab-content").forEach((content) => {
         content.classList.remove("active");
     });
 
-    // Hiển thị nội dung tab được chọn
     document.getElementById(tabId).classList.add("active");
 }
 
@@ -115,7 +110,9 @@ function handleFile(file) {
     const progressContainer = document.getElementById("progress-container");
     const progressBar = document.getElementById("progress-bar");
     const conf = document.getElementById("conf-threshold").value;
-    const duration = document.getElementById("video-duration") ? document.getElementById("video-duration").value : 15;
+    const duration = document.getElementById("video-duration")
+        ? document.getElementById("video-duration").value
+        : 15;
 
     // Reset progress UI
     progressContainer.style.display = "none";
@@ -182,7 +179,9 @@ function detectUrl() {
     const progressContainer = document.getElementById("progress-container");
     const progressBar = document.getElementById("progress-bar");
     const conf = document.getElementById("conf-threshold").value;
-    const duration = document.getElementById("video-duration") ? document.getElementById("video-duration").value : 15;
+    const duration = document.getElementById("video-duration")
+        ? document.getElementById("video-duration").value
+        : 15;
 
     // Reset progress UI
     progressContainer.style.display = "none";
@@ -268,19 +267,22 @@ function pollVideoTask(taskId) {
                     loader.classList.remove("active");
                     progressContainer.style.display = "none";
                     progressBar.style.width = "0%";
-                    
+
                     // Hiển thị kết quả video
                     displayResult({
                         type: "video",
                         video_url: task.result,
-                        counts: task.counts
+                        counts: task.counts,
                     });
                     showToast("Xử lý Video thành công!");
                 } else if (task.status === "failed") {
                     clearInterval(pollInterval);
                     loader.classList.remove("active");
                     progressContainer.style.display = "none";
-                    showToast(`Lỗi xử lý video: ${task.error || 'Lỗi không xác định'}`, "error");
+                    showToast(
+                        `Lỗi xử lý video: ${task.error || "Lỗi không xác định"}`,
+                        "error",
+                    );
                 }
             })
             .catch((err) => {
