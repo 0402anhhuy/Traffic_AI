@@ -186,9 +186,14 @@ function detectUrl() {
     const urlInput = document.getElementById("url-input").value.trim();
     if (!urlInput) {
         showToast(
-            "Vui lòng nhập Link video direct hoặc link YouTube!",
+            "Vui lòng nhập Link YouTube!",
             "error",
         );
+        return;
+    }
+    
+    if (!urlInput.includes("youtube.com") && !urlInput.includes("youtu.be")) {
+        showToast("Chỉ hỗ trợ xử lý Link YouTube!", "error");
         return;
     }
 
@@ -209,10 +214,7 @@ function detectUrl() {
 
     displayInputUrl(urlInput);
 
-    loaderText.innerText =
-        urlInput.includes("youtube.com") || urlInput.includes("youtu.be")
-            ? "Đang trích xuất luồng stream YouTube bằng yt-dlp..."
-            : "Đang phân tích Link URL...";
+    loaderText.innerText = "Đang trích xuất luồng stream YouTube bằng yt-dlp...";
 
     loader.classList.add("active");
 
