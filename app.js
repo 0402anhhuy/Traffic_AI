@@ -185,13 +185,10 @@ function handleFile(file) {
 function detectUrl() {
     const urlInput = document.getElementById("url-input").value.trim();
     if (!urlInput) {
-        showToast(
-            "Vui lòng nhập Link YouTube!",
-            "error",
-        );
+        showToast("Vui lòng nhập Link YouTube!", "error");
         return;
     }
-    
+
     if (!urlInput.includes("youtube.com") && !urlInput.includes("youtu.be")) {
         showToast("Chỉ hỗ trợ xử lý Link YouTube!", "error");
         return;
@@ -214,7 +211,8 @@ function detectUrl() {
 
     displayInputUrl(urlInput);
 
-    loaderText.innerText = "Đang trích xuất luồng stream YouTube bằng yt-dlp...";
+    loaderText.innerText =
+        "Đang trích xuất luồng stream YouTube bằng yt-dlp...";
 
     loader.classList.add("active");
 
@@ -470,7 +468,7 @@ function clearDisplay() {
                     <div>Chưa có kết quả nhận diện.</div>
                 </div>
             `;
-    
+
     const inputDisplay = document.getElementById("input-display-area");
     if (inputDisplay) {
         inputDisplay.innerHTML = `
@@ -498,7 +496,7 @@ function displayInputFile(file) {
     const inputDisplay = document.getElementById("input-display-area");
     if (!inputDisplay) return;
     inputDisplay.innerHTML = "";
-    
+
     if (file.type.startsWith("image/")) {
         const img = document.createElement("img");
         img.src = URL.createObjectURL(file);
