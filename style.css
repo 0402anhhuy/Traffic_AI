@@ -186,15 +186,15 @@ main {
 /* ========================================================
     TAB 1: REAL-TIME DETECTION LAYOUT
 ======================================================== */
-.detect-grid {
+.detect-top-grid {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 1fr;
     gap: 24px;
 }
 
 @media (max-width: 900px) {
-    .detect-grid {
-        grid-template-columns: 1fr;
+    .detect-top-grid, .display-split {
+        grid-template-columns: 1fr !important;
     }
 }
 
