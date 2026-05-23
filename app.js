@@ -136,6 +136,8 @@ function handleFile(file) {
     progressBar.style.width = "0%";
     loaderSubtext.innerText = "Vui lòng chờ trong giây lát";
 
+    displayInputFile(file);
+
     loaderText.innerText = file.type.startsWith("video/")
         ? "Đang phân tích Video (Trích xuất các khung hình)..."
         : "Đang nhận diện phương tiện giao thông...";
@@ -204,6 +206,8 @@ function detectUrl() {
     progressContainer.style.display = "none";
     progressBar.style.width = "0%";
     loaderSubtext.innerText = "Vui lòng chờ trong giây lát";
+
+    displayInputUrl(urlInput);
 
     loaderText.innerText =
         urlInput.includes("youtube.com") || urlInput.includes("youtu.be")
@@ -461,9 +465,19 @@ function clearDisplay() {
     display.innerHTML = `
                 <div class="empty-display">
                     <i class="fa-solid fa-images"></i>
-                    <div>Chưa có dữ liệu. Vui lòng tải file hoặc dán link URL ở phía trên để bắt đầu.</div>
+                    <div>Chưa có kết quả nhận diện.</div>
                 </div>
             `;
+    
+    const inputDisplay = document.getElementById("input-display-area");
+    if (inputDisplay) {
+        inputDisplay.innerHTML = `
+                <div class="empty-display">
+                    <i class="fa-solid fa-images"></i>
+                    <div>Chưa có dữ liệu. Vui lòng tải file hoặc dán link URL.</div>
+                </div>
+            `;
+    }
 
     const dummyCounts = {
         car: 0,
@@ -476,4 +490,37 @@ function clearDisplay() {
     updateStatistics(dummyCounts);
     document.getElementById("url-input").value = "";
     showToast("Đã dọn dẹp màn hình hiển thị.");
+}
+
+function displayInputFile(file) {
+    const inputDisplay = document.getElementById("input-display-area");
+    if (!inputDisplay) return;
+    inputDisplay.innerHTML = "";
+    
+    if (file.type.startsWith("image/")) {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        inputDisplay.appendChild(img);
+    } else if (file.type.startsWith("video/")) {
+        const video = document.createElement("video");
+        video.src = URL.createObjectURL(file);
+        video.controls = true;
+        video.autoplay = true;
+        video.loop = true;
+        inputDisplay.appendChild(video);
+    }
+}
+
+function displayInputUrl(url) {
+    const inputDisplay = document.getElementById("input-display-area");
+    if (!inputDisplay) return;
+    inputDisplay.innerHTML = `
+        <div class="empty-display">
+            <i class="fa-solid fa-link"></i>
+            <div style="margin-top: 10px; word-break: break-all;">
+                <strong>Đầu vào từ Link URL:</strong><br><br>
+                <a href="${url}" target="_blank" style="color: var(--color-primary);">${url}</a>
+            </div>
+        </div>
+    `;
 }
