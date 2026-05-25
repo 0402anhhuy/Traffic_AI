@@ -698,43 +698,29 @@ function setupInteractiveCanvas(container, imageSrc, detections) {
             
 
             const [x1, y1, x2, y2] = det.box;
-
             const color = CLASS_COLORS[det.class_name] || "#ef4444";
-
             
-
+            const base_size = Math.max(canvas.width, canvas.height);
+            const baseThickness = base_size < 600 ? 1 : (base_size < 1200 ? 1.5 : 2);
+            
             ctx.strokeStyle = color;
-
-            ctx.lineWidth = isHovered ? 4 : 2;
-
+            ctx.lineWidth = isHovered ? baseThickness + 1.5 : baseThickness;
             ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-
             
-
             // Draw Label
-
             const label = `${det.class_name} ${det.score.toFixed(2)}`;
-
-            ctx.font = "bold 16px Inter, sans-serif";
-
+            const fontSize = base_size < 600 ? 10 : (base_size < 1200 ? 12 : 14);
+            ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+            
             const textWidth = ctx.measureText(label).width;
-
-            const textHeight = 16;
-
-            const padding = 6;
-
+            const textHeight = fontSize;
+            const padding = base_size < 600 ? 2 : 4;
             
-
             ctx.fillStyle = color;
-
             ctx.fillRect(x1, y1 - textHeight - padding * 2, textWidth + padding * 2, textHeight + padding * 2);
-
             
-
             ctx.fillStyle = "white";
-
             ctx.fillText(label, x1 + padding, y1 - padding);
-
         });
 
     }
