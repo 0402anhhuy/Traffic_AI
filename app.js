@@ -294,6 +294,7 @@ function pollVideoTask(taskId) {
                         type: "video",
                         video_url: task.result,
                         counts: task.counts,
+                        avg_score: task.avg_score
                     });
                     showToast("Xử lý Video thành công!");
                 } else if (task.status === "failed") {
@@ -338,8 +339,8 @@ function displayResult(data) {
         display.appendChild(video);
     }
 
-    // Cập nhật số lượng đếm
-    updateStatistics(data.counts);
+    // Cập nhật số lượng đếm và độ tự tin trung bình
+    updateStatistics(data.counts, data.avg_score);
 }
 
 // ========================================================
@@ -450,7 +451,7 @@ function saveHfConfig() {
         });
 }
 
-function updateStatistics(counts) {
+function updateStatistics(counts, avgScore = 0) {
     let total = 0;
     for (const key in counts) {
         const val = counts[key] || 0;
@@ -458,6 +459,10 @@ function updateStatistics(counts) {
         total += val;
     }
     document.getElementById("count-total").innerText = total;
+    
+    // Cập nhật độ tự tin trung bình
+    const scorePct = (avgScore * 100).toFixed(1);
+    document.getElementById("avg-confidence").innerText = `${scorePct}%`;
 }
 
 function clearDisplay() {
