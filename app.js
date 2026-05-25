@@ -701,21 +701,26 @@ function setupInteractiveCanvas(container, imageSrc, detections) {
             const color = CLASS_COLORS[det.class_name] || "#ef4444";
             
             const base_size = Math.max(canvas.width, canvas.height);
-            const baseThickness = base_size < 600 ? 1 : (base_size < 1200 ? 1.5 : 2);
+            const scale = base_size / 800;
             
             ctx.strokeStyle = color;
-            ctx.lineWidth = isHovered ? baseThickness + 1.5 : baseThickness;
+            // Nét vẽ siêu mỏng: mặc định 1px, hover 2px (nhân với scale để bù trừ ảnh 4K)
+            ctx.lineWidth = isHovered ? Math.max(2, 2 * scale) : Math.max(1, 1 * scale);
             ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
             
             // Draw Label
             const label = `${det.class_name} ${det.score.toFixed(2)}`;
-            const fontSize = base_size < 600 ? 10 : (base_size < 1200 ? 12 : 14);
-            ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+            
+            // Font siêu nhỏ để tránh đè chéo: khoảng 10px cho ảnh 800px
+            const fontSize = Math.max(8, Math.floor(10 * scale));
+            ctx.font = `600 ${fontSize}px Inter, sans-serif`; // Dùng 600 thay vì bold để chữ thanh thoát hơn
             
             const textWidth = ctx.measureText(label).width;
             const textHeight = fontSize;
-            const padding = base_size < 600 ? 2 : 4;
+            const padding = Math.max(2, Math.floor(3 * scale));
             
+            // Tính toán tọa độ nền chữ (background)
+            // Lùi background vào sát viền hơn
             ctx.fillStyle = color;
             ctx.fillRect(x1, y1 - textHeight - padding * 2, textWidth + padding * 2, textHeight + padding * 2);
             
